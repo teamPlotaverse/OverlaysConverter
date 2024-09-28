@@ -11,12 +11,16 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
+import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import path from 'path';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 const fs = require('fs').promises;
+
+if (ffmpegStatic)
+  ffmpeg.setFfmpegPath(ffmpegStatic.replace('app.asar', 'app.asar.unpacked'));
 
 class AppUpdater {
   constructor() {
@@ -44,7 +48,7 @@ async function getUniqueFilePath(filePath: string) {
   const baseName = path.basename(filePath, ext);
   const dir = path.dirname(filePath);
   let newPath = filePath;
-  let counter = 1;
+  let counter = 2;
 
   while (
     await fs
@@ -53,7 +57,7 @@ async function getUniqueFilePath(filePath: string) {
       .catch(() => false)
   ) {
     newPath = path.join(dir, `${baseName} (${counter})${ext}`);
-    counter++;
+    counter += 1;
   }
 
   return newPath;
