@@ -1,13 +1,13 @@
 {
   "name": "@plotaverse/overlays-converter",
   "description": "Overlays Converter",
-  "homepage": "https://github.com/plotaverse/OverlaysConverter#readme",
+  "homepage": "https://github.com/teamPlotaverse/OverlaysConverter#readme",
   "bugs": {
-    "url": "https://github.com/plotaverse/OverlaysConverter/issues"
+    "url": "https://github.com/teamPlotaverse/OverlaysConverter/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/plotaverse/OverlaysConverter.git"
+    "url": "git+https://github.com/teamPlotaverse/OverlaysConverter.git"
   },
   "main": "./.erb/dll/main.bundle.dev.js",
   "scripts": {
@@ -216,8 +216,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "plotaverse",
-      "repo": ""
+      "owner": "teamPlotaverse",
+      "repo": "OverlaysConverter"
     }
   },
   "devEngines": {

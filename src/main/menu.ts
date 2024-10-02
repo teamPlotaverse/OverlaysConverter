@@ -57,14 +57,14 @@ export default class MenuBuilder {
       label: 'Electron',
       submenu: [
         {
-          label: 'About ElectronReact',
+          label: 'About Overlays Converter',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide Overlays Converter',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
@@ -157,27 +157,31 @@ export default class MenuBuilder {
         {
           label: 'Learn More',
           click() {
-            shell.openExternal('https://electronjs.org');
-          },
-        },
-        {
-          label: 'Documentation',
-          click() {
             shell.openExternal(
-              'https://github.com/electron/electron/tree/main/docs#readme',
+              'https://github.com/teamPlotaverse/OverlaysConverter',
             );
           },
         },
-        {
-          label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://www.electronjs.org/community');
-          },
-        },
+        // {
+        //   label: 'Documentation',
+        //   click() {
+        //     shell.openExternal(
+        //       'https://github.com/electron/electron/tree/main/docs#readme',
+        //     );
+        //   },
+        // },
+        // {
+        //   label: 'Community Discussions',
+        //   click() {
+        //     shell.openExternal('https://www.electronjs.org/community');
+        //   },
+        // },
         {
           label: 'Search Issues',
           click() {
-            shell.openExternal('https://github.com/electron/electron/issues');
+            shell.openExternal(
+              'https://github.com/teamPlotaverse/OverlaysConverter/issues',
+            );
           },
         },
       ],
@@ -258,27 +262,31 @@ export default class MenuBuilder {
           {
             label: 'Learn More',
             click() {
-              shell.openExternal('https://electronjs.org');
-            },
-          },
-          {
-            label: 'Documentation',
-            click() {
               shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme',
+                'https://github.com/teamPlotaverse/OverlaysConverter',
               );
             },
           },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            },
-          },
+          // {
+          //   label: 'Documentation',
+          //   click() {
+          //     shell.openExternal(
+          //       'https://github.com/electron/electron/tree/main/docs#readme',
+          //     );
+          //   },
+          // },
+          // {
+          //   label: 'Community Discussions',
+          //   click() {
+          //     shell.openExternal('https://www.electronjs.org/community');
+          //   },
+          // },
           {
             label: 'Search Issues',
             click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              shell.openExternal(
+                'https://github.com/teamPlotaverse/OverlaysConverter/issues',
+              );
             },
           },
         ],
