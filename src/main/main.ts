@@ -34,7 +34,7 @@ let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
+  log.info(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
@@ -48,7 +48,7 @@ async function getUniqueFilePath(filePath: string) {
   const baseName = path.basename(filePath, ext);
   const dir = path.dirname(filePath);
   let newPath = filePath;
-  let counter = 2;
+  let counter = 1;
 
   while (
     await fs
@@ -56,8 +56,7 @@ async function getUniqueFilePath(filePath: string) {
       .then(() => true)
       .catch(() => false)
   ) {
-    newPath = path.join(dir, `${baseName} (${counter})${ext}`);
-    counter += 1;
+    newPath = path.join(dir, `${baseName} (${++counter})${ext}`);
   }
 
   return newPath;
@@ -67,19 +66,34 @@ ipcMain.handle('convert-video', async (event, { inputPath }) => {
   const outputPath = await getUniqueFilePath(
     inputPath.replace(/\.[^/.]+$/, '.mp4'),
   );
-  const previewPath = await getUniqueFilePath(
-    inputPath.replace(/\.[^/.]+$/, '.jpg'),
-  );
+  // const previewPath = await getUniqueFilePath(
+  //   inputPath.replace(/\.[^/.]+$/, '.jpg'),
+  // );
 
   return new Promise((resolve, reject) => {
     // Generate preview image
-    ffmpeg(inputPath)
-      .screenshots({
-        timestamps: ['3'],
-        filename: path.basename(previewPath),
-        folder: path.dirname(previewPath),
-      })
-      .on('error', (err) => reject(err));
+    // ffmpeg(inputPath)
+    //   .outputOptions(
+    //     '-ss',
+    //     '3',
+    //     '-vframes',
+    //     '1',
+
+    //     '-vf',
+    //     "scale=600:600,format=rgba,format=rgb24,alphaextract,format=gray,geq='if(gt(val,0),255,0)'",
+    //   )
+    //   .on('error', (err) => reject(err))
+    //   .on('end', () => {
+    //     event.sender.send('conversion-progress', {
+    //       inputPath,
+    //       progress: 100,
+    //     });
+    //     resolve({ outputPath, previewPath });
+    //   })
+    //   .save(previewPath);
+
+    // https://stackoverflow.com/a/70899710/384349
+    let totalTime: number | undefined;
 
     ffmpeg(inputPath)
       .outputOptions([
@@ -99,20 +113,22 @@ ipcMain.handle('convert-video', async (event, { inputPath }) => {
         '15',
         '-g',
         '1',
-
-        // '-filter_complex',
-        // '[0:v]split=2[alpha][rgb];[alpha]alphaextract,format=gray,scale=4096:4096[top];[rgb]scale=4096:4096[bottom];[top][bottom]vstack,scale=720:1440',
-        // '-c:v',
-        // 'libx264',
-        // '-pix_fmt',
-        // 'yuv420p',
-        // '-timecode',
-        // '00:00:00:00',
       ])
+      .on('codecData', (data: any) => {
+        if ('duration' in data) {
+          totalTime = parseInt(data.duration.replace(/:/g, ''), 10);
+        }
+      })
       .on('progress', (progress) => {
+        const time = parseInt(progress.timemark.replace(/:/g, ''), 10);
+        const percent = Math.max(
+          0,
+          progress.percent ?? (time / (totalTime ?? 1)) * 100,
+        );
+
         event.sender.send('conversion-progress', {
           inputPath,
-          progress: progress.percent || 0,
+          progress: percent,
         });
       })
       .on('end', () => {
@@ -120,9 +136,12 @@ ipcMain.handle('convert-video', async (event, { inputPath }) => {
           inputPath,
           progress: 100,
         });
-        resolve({ outputPath, previewPath });
+        resolve({ outputPath });
       })
-      .on('error', (err) => reject(err))
+      .on('error', (err) => {
+        log.error('Error during conversion:', err);
+        reject(err);
+      })
       .save(outputPath);
   });
 });
@@ -149,7 +168,7 @@ const installExtensions = async () => {
       extensions.map((name) => installer[name]),
       forceDownload,
     )
-    .catch(console.log);
+    .catch(log.info);
 };
 
 const createWindow = async () => {
@@ -230,4 +249,4 @@ app
       if (mainWindow === null) createWindow();
     });
   })
-  .catch(console.log);
+  .catch(log.info);
