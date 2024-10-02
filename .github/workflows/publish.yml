@@ -9,6 +9,9 @@ jobs:
   publish:
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      contents: write # the GITHUB_TOKEN will be able to create a release
+
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
